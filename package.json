@@ -1,0 +1,33 @@
+{
+	"name": "level-namequery",
+	"version": "0.0.1",
+	"description": "A search engine on top of LevelDB for Name <-> User-ID relations.",
+	"main": "./lib/nq.js",
+	"dependencies": {
+		"msgpack": "0.1.11"
+	},
+	"devDependencies": {
+		"level": "0.14.0"
+	},
+	"scripts": {
+		"test": "node ./test/nq.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/KenanSulayman/level-namequery.git"
+	},
+	"keywords": [
+		"level",
+		"levelup",
+		"leveldown",
+		"msgpack",
+		"encoding",
+		"query",
+		"search",
+		"namequery",
+		"lookup",
+		"searchengine",
+		"engine"
+	],
+	"author": "Kenan Sulayman <kenan@sly.mn>"
+}
