@@ -1,10 +1,10 @@
 {
 	"name": "level-namequery",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A search engine on top of LevelDB for Name <-> User-ID relations.",
 	"main": "./lib/nq.js",
 	"dependencies": {
-		"level": "0.14.0"
+		"level": "0.15.0"
 	},
 	"scripts": {
 		"test": "node ./test/nq.js"
