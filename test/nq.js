@@ -72,12 +72,18 @@ var namequery = require("../");
 	};
 
 // error functions
-	var _ef = false;
+	var _ef = false,
+	_end = function () {
+		if ( _ef )
+			console.log("\n[\x1b[31mNot all tests finished successfully\x1b[0m]")
+		else
+			console.log("\n[\x1b[36mAll tests finished successfully\x1b[0m]")
+	};
 	tl = function ( t, k, i ) {
 		if ( t )
-			return (_ef = true), console.log(i + ". [\x1b[39mSUCCESS\x1b[0m] " + k);
+			return console.log(i + ". [\x1b[39mSUCCESS\x1b[0m] " + k);
 		else
-			return console.log(i + ". [\x1b[31mFAIL\x1b[0m] " + k);
+			return (_ef = true), console.log(i + ". [\x1b[31mFAIL\x1b[0m] " + k);
 	}
 
 // Reference-Values
@@ -100,19 +106,18 @@ try {
 
 nq.index("Kenan Sulayman", 0xEF, function () {
 	tl(1,"Indexing successful.",2);
-	nq.query("kenan", function ( _ref ) {
-		equal(_ref, s2) ? tl(1, "Query result correct.", 4) : tl(1, "Query result incorrect. (Are sure the database is empty?)", 4);
+	nq.query("kenan", { partial: true },function ( _ref ) {
+		console.log(_ref, equal(_ref, s2))
+		equal(_ref, s2) ? tl(1, "Query result correct.", 3) : tl(0, "Query result incorrect. (Are sure the database is empty?)", 3);
 		nq.query("ken", { partial: true }, function ( _ref ) {
-			equal(_ref, s2) ? tl(1, "Partial-Query result correct.", 5) : tl(1, "Partial-Query result incorrect. (Are sure the database is empty?)", 5);
+			console.log(_ref, s2, equal(_ref, s2))
+			equal(_ref, s2) ? tl(1, "Partial-Query result correct.", 4) : tl(0, "Partial-Query result incorrect. (Are sure the database is empty?)", 4);
 			nq.unlink("Kenan Sulayman", 0xEF, function () {
-				tl(1, "Reached unlink callback.", 6)
+				tl(1, "Reached unlink callback.", 5)
 				nq.query("kenan", function (_ref) {
-					_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)", 7) : tl(1, "Query result length after unlink correct.", 7);
+					_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)", 6) : tl(1, "Query result length after unlink correct.", 6);
 
-					if ( !_ef )
-						console.log("\n[\x1b[31mNot all tests finished successfully\x1b[0m]")
-					else
-						console.log("\n[\x1b[36mAll tests finished successfully\x1b[0m]")
+					_end();
 				});
 			})
 		});
