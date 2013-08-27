@@ -37,7 +37,7 @@ var level = require("level");
 var namequery = require("../");
 
 // util
-	function equal() {
+	var equal = function () {
 		function g(a, b) {
 			var c;
 			if (isNaN(a) && isNaN(b) && "number" === typeof a && "number" === typeof b || a === b) return !0;
@@ -69,15 +69,26 @@ var namequery = require("../");
 			if (d = [], e = [], !g(arguments[0],
 				arguments[f])) return !1;
 		return !0
-	};
+	}, uuid = function() {
+	return "10000000-1000-4000-8000-100000000000".replace(
+		/[018]/g,
+		function(a) {
+			return (
+				a ^ Math.random() * 16 >> a / 4
+			).toString(16)
+		}
+	)
+}
 
 // error functions
-	var _ef = false,
-	_end = function () {
+	var _ef = false, tdb = __dirname + "/" + uuid(), _tdb = level(tdb);
+	var _end = function () {
 		if ( _ef )
 			console.log("\n[\x1b[31mNot all tests finished successfully\x1b[0m]")
 		else
 			console.log("\n[\x1b[36mAll tests finished successfully\x1b[0m]")
+
+		_tdb.close(), level.destroy(tdb);
 	};
 	tl = function ( t, k, i ) {
 		if ( t )
@@ -88,10 +99,6 @@ var namequery = require("../");
 
 // Reference-Values
 	var s1 = [
-		{ key: 'kenan«2932660709', value: '239' },
-  		{ key: 'sulayman«2932660709', value: '239' }
-  	],
-  	s2 = [
   		{ key: 'kenan«2932660709', value: '239' }
   	];
 
@@ -100,25 +107,27 @@ var namequery = require("../");
 	console.log("\t\x1b[43mlevel-namequery — unit tests\x1b[0m\n");
 
 try {
-	nq = namequery(level(__dirname + "/tdb"));
-} catch (e) { tl(0,"Opening database failed.",1); process.exit();
+	nq = namequery(_tdb);
+} catch (e) { throwtl(0,"Opening database failed.",1); process.exit();
 } finally { tl(1,"Opening database successful.",1); }
 
 nq.index("Kenan Sulayman", 0xEF, function () {
 	tl(1,"Indexing successful.",2);
 	nq.query("kenan", { partial: true },function ( _ref ) {
-		console.log(_ref, equal(_ref, s2))
-		equal(_ref, s2) ? tl(1, "Query result correct.", 3) : tl(0, "Query result incorrect. (Are sure the database is empty?)", 3);
+		equal(_ref, s1) ? tl(1, "Query result correct.", 3) : tl(0, "Query result incorrect. (Are sure the database is empty?)", 3);
 		nq.query("ken", { partial: true }, function ( _ref ) {
-			console.log(_ref, s2, equal(_ref, s2))
-			equal(_ref, s2) ? tl(1, "Partial-Query result correct.", 4) : tl(0, "Partial-Query result incorrect. (Are sure the database is empty?)", 4);
-			nq.unlink("Kenan Sulayman", 0xEF, function () {
-				tl(1, "Reached unlink callback.", 5)
-				nq.query("kenan", function (_ref) {
-					_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)", 6) : tl(1, "Query result length after unlink correct.", 6);
+			equal(_ref, s1) ? tl(1, "Partial-Query result correct.", 4) : tl(0, "Partial-Query result incorrect. (Are sure the database is empty?)", 4);
+			
+			nq._traverse(0xEF, function (_ref) {
+				equal(_ref, ["kenan", "sulayman"]) ? tl(1, "Traversing yields correct result.", 5) : tl(0, "Traversing failed. (Are sure the database is empty?)", 5);
+				nq.unlink("Kenan Sulayman", 0xEF, function () {
+					tl(1, "Reached unlink callback.", 6)
+					nq.query("kenan", function (_ref) {
+						_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)", 7) : tl(1, "Query result length after unlink correct.", 7);
 
-					_end();
-				});
+						_end();
+					});
+				})
 			})
 		});
 	});
