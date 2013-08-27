@@ -147,18 +147,20 @@ nq.index("Kenan Sulayman", 0xEF, function () {
 									return nq.search("Kenan Sulayman", function (_ref) {
 										equal(_ref, s3) ? tl(1, "Ranked search results correct.") : tl(1, "Ranked search results incorrect. (Are sure the database is empty?)");
 
+										console.log(_ref.map(function (v) { return v[0] }))
+
 										nq._gather_traverse([0xEF, 0xF0], function ( _ref ) {
 											equal(_ref, s2) ? tl(1, "Reverse key-traverse successful.") : tl(0, "Reverse key-traverse failed.");
 
 											_end();
-										})
-									})
+										});
+									});
 								});
 							});
-						})
+						});
 					});
-				})
-			})
+				});
+			});
 		});
 	});
-})
+});
