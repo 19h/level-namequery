@@ -81,7 +81,7 @@ var namequery = require("../");
 }
 
 // error functions
-	var _ef = false, tdb = __dirname + "/" + uuid(), _tdb = level(tdb);
+	var _ef = false, _it = 0, tdb = __dirname + "/" + uuid(), _tdb = level(tdb);
 	var _end = function () {
 		if ( _ef )
 			console.log("\n[\x1b[31mNot all tests finished successfully\x1b[0m]")
@@ -90,17 +90,17 @@ var namequery = require("../");
 
 		_tdb.close(), level.destroy(tdb);
 	};
-	tl = function ( t, k, i ) {
+	tl = function ( t, k ) {
 		if ( t )
-			return console.log(i + ". [\x1b[39mSUCCESS\x1b[0m] " + k);
+			return console.log(++_it + ". [\x1b[39mSUCCESS\x1b[0m] " + k);
 		else
-			return (_ef = true), console.log(i + ". [\x1b[31mFAIL\x1b[0m] " + k);
+			return (_ef = true), console.log(_it + ". [\x1b[31mFAIL\x1b[0m] " + k);
 	}
 
 // Reference-Values
-	var s1 = [
-  		{ key: 'kenan«2932660709', value: '239' }
-  	];
+	var s1 = [ { key: 'kenan«2932660709', value: '239' } ],
+	s2 = 	{ '239': [ 'kenan', 'sulayman' ],
+		  '240': [ 'kenan', 'sulayman' ] };
 
 // cool motd
 	console.log("\x1b[34m\n __                            ___             \n/\\ \\                     __  /'___\\            \n\\ \\ \\         __     __ /\\_\\/\\ \\__/  __  __    \n \\ \\ \\  __  /'__`\\ /'_ `\\/\\ \\ \\ ,__\\/\\ \\/\\ \\   \n  \\ \\ \\L\\ \\/\\  __//\\ \\L\\ \\ \\ \\ \\ \\_/\\ \\ \\_\\ \\  \n   \\ \\____/\\ \\____\\ \\____ \\ \\_\\ \\_\\  \\/`____ \\ \n    \\/___/  \\/____/\\/___L\\ \\/_/\\/_/   `/___/> \\\n                     /\\____/             /\\___/\n                     \\_/__/              \\/__/\n")
@@ -108,24 +108,36 @@ var namequery = require("../");
 
 try {
 	nq = namequery(_tdb);
-} catch (e) { throwtl(0,"Opening database failed.",1); process.exit();
-} finally { tl(1,"Opening database successful.",1); }
+} catch (e) { throwtl(0,"Opening database failed."); process.exit();
+} finally { tl(1,"Opening database successful."); }
 
 nq.index("Kenan Sulayman", 0xEF, function () {
-	tl(1,"Indexing successful.",2);
+	tl(1,"Indexing successful.");
+	
 	nq.query("kenan", { partial: true },function ( _ref ) {
-		equal(_ref, s1) ? tl(1, "Query result correct.", 3) : tl(0, "Query result incorrect. (Are sure the database is empty?)", 3);
+		equal(_ref, s1) ? tl(1, "Query result correct.") : tl(0, "Query result incorrect. (Are sure the database is empty?)");
+		
 		nq.query("ken", { partial: true }, function ( _ref ) {
-			equal(_ref, s1) ? tl(1, "Partial-Query result correct.", 4) : tl(0, "Partial-Query result incorrect. (Are sure the database is empty?)", 4);
+			equal(_ref, s1) ? tl(1, "Partial-Query result correct.") : tl(0, "Partial-Query result incorrect. (Are sure the database is empty?)");
 			
 			nq._traverse(0xEF, function (_ref) {
-				equal(_ref, ["kenan", "sulayman"]) ? tl(1, "Traversing yields correct result.", 5) : tl(0, "Traversing failed. (Are sure the database is empty?)", 5);
-				nq.unlink("Kenan Sulayman", 0xEF, function () {
-					tl(1, "Reached unlink callback.", 6)
-					nq.query("kenan", function (_ref) {
-						_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)", 7) : tl(1, "Query result length after unlink correct.", 7);
+				equal(_ref, ["kenan", "sulayman"]) ? tl(1, "Traversing yields correct result.") : tl(0, "Traversing failed. (Are sure the database is empty?)");
 
-						_end();
+				nq.unlink("Kenan Sulayman", 0xEF, function () {
+					tl(1, "Reached unlink callback.")
+				
+					nq.query("kenan", function (_ref) {
+						_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)") : tl(1, "Query result length after unlink correct.");
+
+						nq.index("Kenan Sulayman", [0xEF, 0xF0], function () {
+							tl(1, "Multi-key index successful.")
+				
+							nq._gather_traverse([0xEF, 0xF0], function ( _ref ) {
+								equal(_ref, s2) ? tl(1, "Reverse key-traverse successful.") : tl(0, "Reverse key-traverse failed.");
+
+								_end();
+							})
+						})
 					});
 				})
 			})
