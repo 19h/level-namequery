@@ -129,14 +129,22 @@ nq.index("Kenan Sulayman", 0xEF, function () {
 					nq.query("kenan", function (_ref) {
 						_ref.length ? tl(0, "Query result length after unlink incorrect. (Are sure the database is empty?)") : tl(1, "Query result length after unlink correct.");
 
-						nq.index("Kenan Sulayman", [0xEF, 0xF0], function () {
-							tl(1, "Multi-key index successful.")
-				
-							nq._gather_traverse([0xEF, 0xF0], function ( _ref ) {
-								equal(_ref, s2) ? tl(1, "Reverse key-traverse successful.") : tl(0, "Reverse key-traverse failed.");
+						nq.index("Kenan Sulayman", [0xEF, 0xF0, 0xF1, 0xF2], function () {
+							nq.index("Katharina Sulayman", [0xF3, 0xF4, 0xF5], function () {
+								nq.index("Tarik Sulayman", [0x56, 0x14, 0x11], function () {
+									tl(1, "Multi-key index successful.")
+								
+									return nq.search("Kenan Sulayman", function (_ref) {
+										console.log(_ref)
 
-								_end();
-							})
+										nq._gather_traverse([0xEF, 0xF0], function ( _ref ) {
+											equal(_ref, s2) ? tl(1, "Reverse key-traverse successful.") : tl(0, "Reverse key-traverse failed.");
+
+											_end();
+										})
+									})
+								});
+							});
 						})
 					});
 				})
