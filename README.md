@@ -3,6 +3,11 @@ Legify Namequery
 
 A search engine on top of LevelDB for Name <-> User-ID relations. This applies to environments where users are identified by an id but still referenced by name.
 
+Why it's so awesome and why you should use it
+------------
+
+*Namequery*'s .search interface gathers search-results and ranks them based on their sift3-distance to the users' query. It even reorders the query to get a better fit on the rank and is extremely fast. It's space-saving and can handle billions of entries easily. :)
+
 Installation
 ------------
 
