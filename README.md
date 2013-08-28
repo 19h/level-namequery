@@ -18,8 +18,7 @@ Usage
 
 Include `level-namequery` and initialize it with a level-instance. If the initialization parameter is a string, namequery will try to spawn a new level-instance in the given path.
 
-	var level = require("level"),
-		namequery = require("level-namequery");
+	var namequery = require("level-namequery").nq;
 
 	var nq = namequery("test");
 
@@ -38,6 +37,37 @@ Unlinking an entry is easy, too:
 	nq.unlink("Kenan Sulayman", "userid", function () {});
 
 All relations to "userid" will be deleted.
+
+Example
+------------
+
+This will index three users and will print out the best match for the given search query.
+
+	var namequery = require("level-namequery").nq;
+
+	var query = nq("test");
+
+	query.index("Kenan Sulayman", 0xEF, function () {
+		query.index("Peter Suleiman", 0xF0, function () {
+			query.index("Kenen Sulaimann", 0xF1, function () {
+				query.search("sul ken", function ( _ref ) {
+					console.log(
+						"Best match: \n1. " + _ref[0][0] +
+						" indexed as: [" + _ref[0][1].join(", ") + "]" +
+						"\n\nOther matches:"
+					)
+
+					_ref.slice(1).forEach(function(a, b) {
+						console.log(
+							(b + 1) + ".",
+							a[0] + " indexed as: [" +
+							a[1].join(", ") + "]"
+						)
+	    				})
+				}); 
+			});
+		});
+	});
 
 License
 ------------
