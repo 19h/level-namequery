@@ -30,7 +30,7 @@ You'll most probably start by indexing a user.
 Namequery will now relate "userid" to "kenan" and "sulayman". You can query the user with an easy interface:
 
 	nq.search("sul kenan", function ( _ref ) {
-		// _ref is [[0xEF, ['kenan', 'sulayman'], 0.4354747839116936 ]]
+		// _ref is [["userid", ['kenan', 'sulayman'], 0.4354747839116936 ]]
 	}); 
 
 Unlinking an entry is easy, too:
