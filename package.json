@@ -1,10 +1,10 @@
 {
-	"name": "level-namequery",
+	"name": "level-namequery-lmdb",
 	"version": "0.2.1",
-	"description": "An intelligent search engine on top of LevelDB for Name <-> User-ID relations.",
+	"description": "An intelligent search engine on top of LevelDB for Name <-> User-ID relations. [LMDB-branch]",
 	"main": "./lib/nq.js",
 	"dependencies": {
-		"hyperlevel": "~0.15.0"
+		"uberlevel": "*"
 	},
 	"scripts": {
 		"test": "node ./test/nq.js"
