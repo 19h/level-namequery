@@ -101,25 +101,29 @@ var namequery = require("../");
 	var s1 = [ { key: 'kenan«2932660709', value: '239' } ],
 	s2 = 	{ '239': [ 'kenan', 'sulayman' ],
 		  '240': [ 'kenan', 'sulayman' ] },
-	s3 =  [ [ '243', [ 'katharina', 'sulayman' ], 0.5596728027676845 ],
-	      [ '244', [ 'katharina', 'sulayman' ], 0.5596728027676845 ],
-	      [ '245', [ 'katharina', 'sulayman' ], 0.5596728027676845 ],
+	s3 =  [ [ '240', [ 'kenan', 'sulayman' ], 1 ],
+	      [ '239', [ 'kenan', 'sulayman' ], 1 ],
+	      [ '241', [ 'kenan', 'sulayman' ], 1 ],
+	      [ '242', [ 'kenan', 'sulayman' ], 1 ],
 	      [ '86', [ 'tarik', 'sulayman' ], 0.6153846153846154 ],
 	      [ '17', [ 'tarik', 'sulayman' ], 0.6153846153846154 ],
 	      [ '20', [ 'tarik', 'sulayman' ], 0.6153846153846154 ],
-	      [ '240', [ 'kenan', 'sulayman' ], 1 ],
-	      [ '239', [ 'kenan', 'sulayman' ], 1 ],
-	      [ '241', [ 'kenan', 'sulayman' ], 1 ],
-	      [ '242', [ 'kenan', 'sulayman' ], 1 ] ];
+	      [ '243', [ 'katharina', 'sulayman' ], 0.5596728027676845 ],
+	      [ '244', [ 'katharina', 'sulayman' ], 0.5596728027676845 ],
+	      [ '245', [ 'katharina', 'sulayman' ], 0.5596728027676845 ] ];
 
 // cool motd
 	console.log("\x1b[34m\n __                            ___             \n/\\ \\                     __  /'___\\            \n\\ \\ \\         __     __ /\\_\\/\\ \\__/  __  __    \n \\ \\ \\  __  /'__`\\ /'_ `\\/\\ \\ \\ ,__\\/\\ \\/\\ \\   \n  \\ \\ \\L\\ \\/\\  __//\\ \\L\\ \\ \\ \\ \\ \\_/\\ \\ \\_\\ \\  \n   \\ \\____/\\ \\____\\ \\____ \\ \\_\\ \\_\\  \\/`____ \\ \n    \\/___/  \\/____/\\/___L\\ \\/_/\\/_/   `/___/> \\\n                     /\\____/             /\\___/\n                     \\_/__/              \\/__/\n")
 	console.log("\t\x1b[43mlevel-namequery — unit tests\x1b[0m\n");
 
 try {
-	nq = namequery(_tdb);
-} catch (e) { throwtl(0,"Opening database failed."); process.exit();
-} finally { tl(1,"Opening database successful."); }
+	nq = namequery.nq(_tdb);
+} catch (e) {
+	tl(0, "Opening database failed.");
+	process.exit();
+}
+
+tl(1, "Opening database successful.");
 
 nq.index("Kenan Sulayman", 0xEF, function () {
 	tl(1,"Indexing successful.");
@@ -145,7 +149,8 @@ nq.index("Kenan Sulayman", 0xEF, function () {
 									tl(1, "Multi-key index successful.")
 								
 									return nq.search("Kenan Sulayman", function (_ref) {
-										equal(_ref, s3) ? tl(1, "Ranked search results correct.") : tl(1, "Ranked search results incorrect. (Are sure the database is empty?)");
+										console.log(_ref)
+										equal(_ref, s3) ? tl(1, "Ranked search results correct.") : tl(0, "Ranked search results incorrect. (Are sure the database is empty?)");
 
 										console.log(_ref.map(function (v) { return v[0] }))
 
